@@ -26,6 +26,14 @@ public class TestCheck {
         check = new CheckData();
     }
 
+    @Test
+    void testCheckIsInterface() {
+        //Arrange
+        //Act
+        //Assert
+        assertThat(Check.class)
+                .isInterface();
+    }
 
     @Test
     void testErrorDataCheck()
@@ -69,5 +77,33 @@ public class TestCheck {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void testOkDataPostsFileCheck() {
+        //Arrange
+        String[] data = new String[]
+                {
+                        UUID.randomUUID().toString() + ": " + RandomString.make(8),
+                        UUID.randomUUID().toString() + ": " + RandomString.make(8),
+                        UUID.randomUUID().toString() + ": " + RandomString.make(8)
+                };
+        //Act
+        boolean result = check.checkDataPosts(data);
+        //Assert
+        assertThat(result).isTrue();
+    }
 
+    @Test
+    void testErrorDataPostsFileCheck() {
+        //Arrange
+        String[] data = new String[]
+                {
+                        RandomString.make(8),
+                        UUID.randomUUID().toString(),
+                        UUID.randomUUID().toString() + ": " + RandomString.make(8)
+                };
+        //Act
+        //Assert
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(check.checkDataPosts(data))
+                .withMessage("Invalid posts data format");
+    }
 }

@@ -141,7 +141,8 @@ public class TestEmployee {
         String postId = UUID.randomUUID().toString();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
         String id = UUID.randomUUID().toString();
-        String trueString = "firstName: " + firstName + "\n" +
+        String trueString = "id: " + id +"\n" +
+                "firstName: " + firstName + "\n" +
                 "lastName: " + lastName + "\n" +
                 "description: none\n" +
                 "characteristics: " + characteristics[0] + ";\n" +
