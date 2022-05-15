@@ -1,7 +1,17 @@
+import org.backend.data.DataBuilder;
+import org.backend.data.DataLoader;
+import org.backend.data.DataSaver;
+import org.backend.employee.Employee;
+import org.backend.employee.PostEmployee;
+import org.backend.files.FileDataBuilder;
+import org.backend.files.FileLoader;
+import org.backend.files.FileSaver;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.backend.utils.CheckData;
+
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.FileWriter;
@@ -12,10 +22,12 @@ import java.util.UUID;
 
 public class TestDataLoader {
     DataLoader dataLoader;
+    DataBuilder dataBuilder;
 
     @BeforeEach
     void beforeEach() {
-        dataLoader = new FileLoader(new CheckData());
+        dataBuilder = new FileDataBuilder(new CheckData());
+        dataLoader = new FileLoader(new CheckData(),dataBuilder);
     }
 
     @Test
@@ -31,11 +43,11 @@ public class TestDataLoader {
     void testOkLoadEmployeesData(@TempDir Path dir) {
         //Arrange
         Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
-        DataSaver dataSaver = new FileSaver(dataLoader.getCheck());
+        DataSaver dataSaver = new FileSaver(dataLoader.getCheck(),dataBuilder);
         Employee[] employees = CreateRandomEmployees(3);
         dataSaver.createOrReplaceSaveData(employees,file);
         //Act
-        Employee[] load_employees = dataLoader.loadEmployeeData(file);
+        Employee[] load_employees = dataLoader.loadEmployeesData(file);
         //Assert
         assertThat(load_employees)
                 .containsOnly(employees);
@@ -44,13 +56,13 @@ public class TestDataLoader {
     void testOkPostsData(@TempDir Path dir){
         //Arrange
         Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
-        DataSaver dataSaver = new FileSaver(dataLoader.getCheck());
-        List<PostEmployee> postEmployees = new ArrayList<PostEmloyee>();
+        DataSaver dataSaver = new FileSaver(dataLoader.getCheck(),dataBuilder);
+        List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
         for(int i = 0;i<3;i++)
         {
-            postEmployees.add(new PostEmployee(UUID.randomUUID().toString(),RandomString.make(10)));
+            postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
         }
-        dataSaver.createOrReplaceSaveData(postEmployees,file);
+        dataSaver.createOrReplaceSaveData(postEmployees.toArray(new PostEmployee[] {}),file);
         //Act
         PostEmployee[] load_employees = dataLoader.loadPostsData(file);
         //Assert
@@ -74,8 +86,10 @@ public class TestDataLoader {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(dataLoader.loadEmployeeData(file))
-                .withMessage("Invalid employee data format");
+                .isThrownBy(()-> {
+                    dataLoader.loadEmployeesData(file);
+                })
+                .withMessage("Invalid org.backend.employee org.backend.data format");
 
     }
     @Test
@@ -94,8 +108,10 @@ public class TestDataLoader {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(dataLoader.loadPostsData(file))
-                .withMessage("Invalid post data format");
+                .isThrownBy(()-> {
+                    dataLoader.loadPostsData(file);
+                })
+                .withMessage("Invalid post org.backend.data format");
     }
 
     private Employee[] CreateRandomEmployees(int size)

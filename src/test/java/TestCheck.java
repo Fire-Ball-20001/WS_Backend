@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
+import org.backend.utils.Check;
+import org.backend.utils.CheckData;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,7 +44,7 @@ public class TestCheck {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->{ check.checkDataEmployees(error_data);})
-                .withMessage("Invalid data format");
+                .withMessage("Invalid org.backend.data format");
     }
 
     @Test
@@ -103,7 +105,7 @@ public class TestCheck {
                 };
         //Act
         //Assert
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(check.checkDataPosts(data))
-                .withMessage("Invalid posts data format");
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->{ check.checkDataPosts(data);})
+                .withMessage("Invalid posts org.backend.data format");
     }
 }

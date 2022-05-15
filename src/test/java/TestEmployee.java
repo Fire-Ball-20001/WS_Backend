@@ -1,5 +1,7 @@
 import static org.assertj.core.api.Assertions.*;
 
+import org.backend.employee.Employee;
+import org.backend.employee.PostEmployee;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +19,9 @@ public class TestEmployee {
                 {
                         RandomString.make(7)
                 };
-        String postId = UUID.randomUUID().toString();
+        UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         //Act
         Employee employee = Employee.builder()
                 .firstName(firstName)
@@ -41,23 +43,19 @@ public class TestEmployee {
         //Arrange
         String firstName = RandomString.make(8);
         String lastName = RandomString.make(7);
-        String description = "";
-        String[] characteristics = new String[]
-                {
-                        RandomString.make(7)
-                };
-        String postId = UUID.randomUUID().toString();
-        PostEmployee post = new PostEmployee(postId, RandomString.make(7));
-        String id = UUID.randomUUID().toString();
         //Act
         //Assert
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(Employee.builder()
-                .firstName(firstName)
-                .build());
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(Employee.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .build());
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+            Employee.builder()
+                    .firstName(firstName)
+                    .build();
+        });
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+            Employee.builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .build();
+        });
 
     }
 
@@ -66,20 +64,20 @@ public class TestEmployee {
         //Arrange
         String firstName = RandomString.make(8);
         String lastName = RandomString.make(7);
-        String description = "";
+        String description = RandomString.make(8);
         String[] characteristics = new String[]
                 {
                         RandomString.make(7)
                 };
-        String postId = UUID.randomUUID().toString();
+        UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         String trueString = "Имя: " + firstName + "\n" +
                 "Фамилия: " + lastName + "\n" +
                 "Описание: " + description + "\n" +
+                "Должность: " + post.getName() + "\n" +
                 "Характеристика: " + "\n" +
-                "\t" + characteristics[0] + ";\n" +
-                "Должность: " + post.getName();
+                "\t" + characteristics[0] + ";";
         //Act
         Employee employee = Employee.builder()
                 .firstName(firstName)
@@ -105,14 +103,15 @@ public class TestEmployee {
                 {
                         RandomString.make(7)
                 };
-        String postId = UUID.randomUUID().toString();
+        UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
-        String id = UUID.randomUUID().toString();
-        String trueString = "firstName: " + firstName + "\n" +
+        UUID id = UUID.randomUUID();
+        String trueString = "id: "+id.toString() + "\n" +
+                "firstName: " + firstName + "\n" +
                 "lastName: " + lastName + "\n" +
                 "description: " + description + "\n" +
-                "characteristics: " + characteristics[0] + ";\n" +
-                "postId: " + post.getID()+"\n" +
+                "postId: " + post.getId()+"\n" +
+                "characteristics: " + characteristics[0] + "\n" +
                 "image: none";
         //Act
         Employee employee = Employee.builder()
@@ -138,15 +137,15 @@ public class TestEmployee {
                 {
                         RandomString.make(7)
                 };
-        String postId = UUID.randomUUID().toString();
+        UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         String trueString = "id: " + id +"\n" +
                 "firstName: " + firstName + "\n" +
                 "lastName: " + lastName + "\n" +
                 "description: none\n" +
-                "characteristics: " + characteristics[0] + ";\n" +
-                "postId: " + post.getID()+"\n" +
+                "postId: " + post.getId()+"\n" +
+                "characteristics: " + characteristics[0] + "\n" +
                 "image: none";
         //Act
         Employee employee = Employee.builder()

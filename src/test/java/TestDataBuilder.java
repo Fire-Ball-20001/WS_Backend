@@ -1,7 +1,12 @@
+import org.backend.data.DataBuilder;
+import org.backend.employee.Employee;
+import org.backend.employee.PostEmployee;
+import org.backend.files.FileDataBuilder;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.backend.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +17,7 @@ public class TestDataBuilder {
 
     @BeforeEach
     void beforeEach() {
-        dataBuilder = new DataBuilder();
-        dataBuilder.setCheck(new CheckData());
+        dataBuilder = new FileDataBuilder(new CheckData());
     }
 
     @Test
@@ -43,8 +47,10 @@ public class TestDataBuilder {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(dataBuilder.parseEmployees(data))
-                .withMessage("Invalid data format");
+                .isThrownBy(() -> {
+                    dataBuilder.parseEmployees(data);
+                })
+                .withMessage("Invalid org.backend.data format");
     }
 
     @Test
@@ -54,7 +60,7 @@ public class TestDataBuilder {
         List<PostEmployee> postEmployeesOrig = new ArrayList<PostEmployee>();
         for(int i = 0;i<10;i++)
         {
-            postEmployeesOrig.add(new PostEmployee(UUID.randomUUID().toString(),RandomString.make(10)));
+            postEmployeesOrig.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
             data.append(postEmployeesOrig.get(postEmployeesOrig.size()-1).toString());
         }
         //Act
@@ -73,14 +79,16 @@ public class TestDataBuilder {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(dataBuilder.parsePostEmployees(data))
-                .withMessage("Invalid posts data format");
+                .isThrownBy(() -> {
+                    dataBuilder.parsePostEmployees(data);
+                })
+                .withMessage("Invalid posts org.backend.data format");
     }
 
     @Test
     void testOkGetStringEmployees() {
         //Arrange
-        List<Employee> employees = new ArrayList<Employees>();
+        List<Employee> employees = new ArrayList<Employee>();
         StringBuilder trueData = new StringBuilder();
         for(int i = 0;i<3;i++)
         {
@@ -101,11 +109,11 @@ public class TestDataBuilder {
     @Test
     void testOkGetStringPosts() {
         //Arrange
-        List<PostEmployee> postEmployees = new ArrayList<PostEmployees>();
+        List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
         StringBuilder trueData = new StringBuilder();
         for(int i = 0;i<3;i++)
         {
-            postEmployees.add(new PostEmployee(UUID.randomUUID().toString(),RandomString.make(10)));
+            postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
         }
         for (PostEmployee post:
                 postEmployees) {

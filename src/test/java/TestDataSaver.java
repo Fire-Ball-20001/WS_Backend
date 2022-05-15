@@ -1,26 +1,30 @@
-import com.sun.source.tree.UsesTree;
+import org.backend.data.DataBuilder;
+import org.backend.data.DataSaver;
+import org.backend.employee.Employee;
+import org.backend.employee.PostEmployee;
+import org.backend.files.FileDataBuilder;
+import org.backend.files.FileSaver;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.backend.utils.CheckData;
+
 import static org.assertj.core.api.Assertions.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.nio.Buffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class TestDataSaver {
     DataSaver dataSaver;
+    DataBuilder dataBuilder;
 
     @BeforeEach
     void beforeEach() {
-        dataSaver = new FileSaver(new CheckData());
+        dataBuilder = new FileDataBuilder(new CheckData());
+        dataSaver = new FileSaver(new CheckData(),dataBuilder);
     }
     @Test
     void testDataSaverIsInterface() {
@@ -34,7 +38,7 @@ public class TestDataSaver {
     @Test
     void testOkDataEmployeesSave(@TempDir Path dir) {
         //Arrange
-        DataBuilder dataBuilder = new DataBuilder(dataSaver.getCheck());
+        DataBuilder dataBuilder = new FileDataBuilder(dataSaver.getCheck());
         Path file = Path.of(dir.toString(),RandomString.make(5) + ".txt");
         Employee[] employees = CreateRandomEmployees(3);
         //Act
@@ -48,15 +52,15 @@ public class TestDataSaver {
     @Test
     void testOkDataPostsSave(@TempDir Path dir) {
         //Arrange
-        DataBuilder dataBuilder = new DataBuilder(dataSaver.getCheck());
+        DataBuilder dataBuilder = new FileDataBuilder(dataSaver.getCheck());
         Path file = Path.of(dir.toString(),RandomString.make(5) + ".txt");
-        List<PostEmployee> postEmployees = new ArrayList<PostEmloyee>();
+        List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
         for(int i = 0;i<3;i++)
         {
-            postEmployees.add(new PostEmployee(UUID.randomUUID().toString(),RandomString.make(10)));
+            postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
         }
         //Act
-        dataSaver.createOrReplaceSaveData(postEmployees,file);
+        dataSaver.createOrReplaceSaveData(postEmployees.toArray(new PostEmployee[] {}),file);
         //Assert
         assertThat(file)
                 .exists()
