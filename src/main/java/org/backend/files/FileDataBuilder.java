@@ -1,7 +1,9 @@
 package org.backend.files;
 
 import org.backend.Main;
+import org.backend.config.Config;
 import org.backend.data.DataBuilder;
+import org.backend.employee.BaseMethodsForEmployeeAndPost;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 import lombok.AllArgsConstructor;
@@ -22,65 +24,86 @@ public class FileDataBuilder implements DataBuilder {
     @Getter
     @Setter
     Check check;
+
     public Employee[] parseEmployees(String data) {
-        String regex ="(?m)id:\\s(?<id>.+)" +
-                "\\nfirstName:(?<firstname>\\s.+)" +
-                "\\nlastName:\\s(?<lastname>.+)" +
-                "\\ndescription:\\s(?<description>.+)" +
-                "\\npostId:\\s(?<postid>.+)" +
-                "\\ncharacteristics:\\s(?<charac>.+)" +
-                "\\nimage:\\s(?<image>.+)";
-        String[] split_data = data.split("\n\n");
-        try{
+        String regex = Config.REGEX_EMPLOYEE;
+        String[] split_data = data.split("\\n\\n");
+        try {
             check.checkDataEmployees(split_data);
-        }
-        catch (RuntimeException e)
-        {
-            throw new RuntimeException("Invalid org.backend.data format");
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid data format");
         }
         List<Employee> employeeList = new ArrayList<>();
         Pattern pattern = Pattern.compile(regex);
-        for (String employee_string:
-             split_data) {
+        for (String employee_string :
+                split_data) {
             Matcher matcher = pattern.matcher(employee_string);
-            while(matcher.find())
-            {
+            while (matcher.find()) {
                 String description = matcher.group("description");
                 String image = matcher.group("image");
+                String postId = matcher.group("postid");
                 Employee.EmployeeBuilder employee = Employee.builder()
                         .id(UUID.fromString(matcher.group("id")))
                         .firstName(matcher.group("firstname"))
                         .lastName(matcher.group("lastname"))
-                        .characteristics(matcher.group("charac").split(";"))
-                        .post(
+                        .characteristics(matcher.group("charac").split(";"));
+                if (postId.equals("none")) {
+                    employee.post(Main.postController.getDefaultPost());
+                } else {
+                    try {
+                        employee.post(
                                 Main.postController.getObjectById(
-                                        UUID.fromString(
-                                                matcher.group("postId"))));
-                if(!description.equals("none"))
-                {
+                                        UUID.fromString(postId)));
+                    }
+                    catch (RuntimeException e)
+                    {
+                        employee.post(Main.postController.getDefaultPost());
+                    }
+                }
+                if (!description.equals("none")) {
                     employee.description(matcher.group("description"));
                 }
-                if(!image.equals("none"))
-                {
+                if (!image.equals("none")) {
                     employee.image(matcher.group("image"));
                 }
                 employeeList.add(employee.build());
             }
 
         }
-        return employeeList.toArray(new Employee[] {});
+        return employeeList.toArray(new Employee[]{});
     }
 
     public PostEmployee[] parsePostEmployees(String data) {
-        return null;
+
+        Pattern pattern = Pattern.compile(Config.REGEX_POST);
+        String[] split_data = data.split("\\n\\n");
+        try {
+            check.checkDataPosts(split_data);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid posts data format");
+        }
+        List<PostEmployee> postEmployees = new ArrayList<>();
+        for (String one_post :
+                split_data) {
+            Matcher matcher = pattern.matcher(one_post);
+            while (matcher.find()) {
+                postEmployees.add(new PostEmployee(
+                        UUID.fromString(matcher.group("postId")),
+                        matcher.group("postName")));
+            }
+
+        }
+        return postEmployees.toArray(new PostEmployee[0]);
     }
 
-    public String getString(PostEmployee[] postEmployees)
-    {
-        return null;
-    }
-    public String getString(Employee[] postEmployees)
-    {
-        return null;
+    public String getSaveString(BaseMethodsForEmployeeAndPost[] baseObjects) {
+        List<String> resultStrings = new ArrayList<>();
+        for (BaseMethodsForEmployeeAndPost baseObject :
+                baseObjects
+        ) {
+            resultStrings.add(baseObject.toSaveString());
+        }
+
+        return String.join("\n\n", resultStrings);
     }
 }

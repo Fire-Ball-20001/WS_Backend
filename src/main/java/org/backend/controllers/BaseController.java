@@ -7,8 +7,9 @@ import lombok.NonNull;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> {
+public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> implements BaseControllerMethods<T> {
     private HashMap<UUID,T> arrays;
     @NonNull
     protected final DataSaver dataSaver;
@@ -20,7 +21,6 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> {
         this.dataSaver = dataSaver;
         this.dataLoader = dataLoader;
         this.file = file;
-        Init();
     }
 
     abstract void Init();
@@ -73,7 +73,7 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> {
         return true;
     }
 
-    public boolean deleteEmployee(UUID id)
+    public boolean deleteObjectById(UUID id)
     {
         if(!arrays.containsKey(id))
         {
@@ -83,7 +83,7 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> {
         return true;
     }
 
-    public boolean saveData()
+    public boolean saveData(Path file)
     {
         try {
             dataSaver.createOrReplaceSaveData(arrays.values().toArray(new BaseMethodsForEmployeeAndPost[0]),file);
@@ -94,14 +94,33 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> {
         }
         return true;
     }
-    public T[] getAllObjects()
-    {
-        return (T[]) arrays.values().toArray(new BaseMethodsForEmployeeAndPost[0]);
+    public boolean saveData() {
+        return saveData(file);
     }
 
-    protected void setAllObjects(Map<UUID,T> new_objects)
+    public List<T> getAllObjects()
+    {
+        return new ArrayList<>(arrays.values());
+    }
+
+    public void setAllObjects(Map<UUID,T> new_objects)
     {
         arrays = new HashMap<>(new_objects);
     }
+    public abstract String getDefaultFileName();
+    public BaseController<T> getBaseController()
+    {
+        return this;
+    }
 
+
+    @Override
+    public int getCountObjects() {
+        return arrays.size();
+    }
+
+    @Override
+    public List<T> getSortObjects() {
+        return getAllObjects().stream().sorted().collect(Collectors.toList());
+    }
 }

@@ -1,5 +1,6 @@
 package org.backend.data;
 
+import org.backend.employee.BaseMethodsForEmployeeAndPost;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 
@@ -11,9 +12,8 @@ public interface DataBuilder extends BaseDataMethods {
 
     PostEmployee[] parsePostEmployees(String data);
 
-    String getString(PostEmployee[] postEmployees);
+    String getSaveString(BaseMethodsForEmployeeAndPost[] postEmployees);
 
-    String getString(Employee[] postEmployees);
 
 
 

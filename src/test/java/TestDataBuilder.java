@@ -1,16 +1,27 @@
+import org.backend.Main;
+import org.backend.controllers.BaseController;
+import org.backend.controllers.EmployeeController;
+import org.backend.controllers.PostController;
+import static org.mockito.Mockito.*;
 import org.backend.data.DataBuilder;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 import org.backend.files.FileDataBuilder;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import static org.assertj.core.api.Assertions.*;
+
+import org.backend.files.FileLoader;
+import org.backend.files.FileSaver;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.backend.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TestDataBuilder {
     DataBuilder dataBuilder;
@@ -20,22 +31,39 @@ public class TestDataBuilder {
         dataBuilder = new FileDataBuilder(new CheckData());
     }
 
+
+
+    @BeforeAll
+    static void beforeAll() {
+        //Create and replace PostController
+        PostController postControllerMock = mock(PostController.class);
+        Main.postController = postControllerMock;
+    }
+
     @Test
     void testOkParseDataEmployees() {
+        //TODO Unknown error
         //Arrange
-        StringBuilder data = new StringBuilder();
+        String data = "";
         List<Employee> employeesOrig = new ArrayList<Employee>();
+        PostEmployee postEmployee = new PostEmployee(UUID.randomUUID(),RandomString.make(8));
+
+        PostController postController = mock(PostController.class);
+        when(postController.getObjectById(postEmployee.getId())).thenReturn(postEmployee);
+        Main.postController = postController;
+
         for(int i = 0;i<10;i++)
         {
-            employeesOrig.add(CreateRandomEmployee());
-            data.append(employeesOrig.get(employeesOrig.size()-1).toSaveString());
-            data.append("\n\n");
+            Employee employee = CreateRandomEmployee();
+            employee.setPost(postEmployee);
+            employeesOrig.add(employee);
         }
+        data = dataBuilder.getSaveString(employeesOrig.toArray(new Employee[0]));
         //Act
-        Employee[] employees = dataBuilder.parseEmployees(data.toString());
+        Employee[] employees = dataBuilder.parseEmployees(data);
         //Assert
         assertThat(employees)
-                .containsOnly(employeesOrig.toArray(new Employee[] {}));
+                .containsOnly(employeesOrig.toArray(new Employee[0]));
     }
 
     @Test
@@ -50,21 +78,21 @@ public class TestDataBuilder {
                 .isThrownBy(() -> {
                     dataBuilder.parseEmployees(data);
                 })
-                .withMessage("Invalid org.backend.data format");
+                .withMessage("Invalid data format");
     }
 
     @Test
     void testOkParseDataPosts() {
         //Arrange
-        StringBuilder data = new StringBuilder();
+        String data = "";
         List<PostEmployee> postEmployeesOrig = new ArrayList<PostEmployee>();
         for(int i = 0;i<10;i++)
         {
             postEmployeesOrig.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
-            data.append(postEmployeesOrig.get(postEmployeesOrig.size()-1).toString());
         }
+        data = dataBuilder.getSaveString(postEmployeesOrig.toArray(new PostEmployee[0]));
         //Act
-        PostEmployee[] postEmployees = dataBuilder.parsePostEmployees(data.toString());
+        PostEmployee[] postEmployees = dataBuilder.parsePostEmployees(data);
         //Assert
         assertThat(postEmployees)
                 .containsOnly(postEmployeesOrig.toArray(new PostEmployee[] {}));
@@ -82,49 +110,45 @@ public class TestDataBuilder {
                 .isThrownBy(() -> {
                     dataBuilder.parsePostEmployees(data);
                 })
-                .withMessage("Invalid posts org.backend.data format");
+                .withMessage("Invalid posts data format");
     }
 
     @Test
     void testOkGetStringEmployees() {
         //Arrange
         List<Employee> employees = new ArrayList<Employee>();
-        StringBuilder trueData = new StringBuilder();
+        List<String> trueDataStrings = new ArrayList<>();
+        String trueData = "";
         for(int i = 0;i<3;i++)
         {
             employees.add(CreateRandomEmployee());
+            trueDataStrings.add(employees.get(i).toSaveString());
         }
-        for (Employee emp:
-             employees) {
-            trueData.append(emp.toString());
-            trueData.append("\n");
-        }
+        trueData = String.join("\n\n", trueDataStrings);
         //Act
-        String result = dataBuilder.getString(employees.toArray(new Employee[] {}));
+        String result = dataBuilder.getSaveString(employees.toArray(new Employee[] {}));
         //Assert
         assertThat(result)
-                .isEqualTo(trueData.toString());
+                .isEqualTo(trueData);
 
     }
     @Test
     void testOkGetStringPosts() {
         //Arrange
         List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
-        StringBuilder trueData = new StringBuilder();
+        List<String> trueDataStrings = new ArrayList<>();
+        String trueData = "";
         for(int i = 0;i<3;i++)
         {
             postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
+            trueDataStrings.add(postEmployees.get(i).toSaveString());
         }
-        for (PostEmployee post:
-                postEmployees) {
-            trueData.append(post.toString());
-            trueData.append("\n");
-        }
+        trueData = String.join("\n\n", trueDataStrings);
         //Act
-        String result = dataBuilder.getString(postEmployees.toArray(new PostEmployee[] {}));
+        String result = dataBuilder.getSaveString(postEmployees.toArray(new PostEmployee[] {}));
         //Assert
         assertThat(result)
-                .isEqualTo(trueData.toString());
+                .isEqualTo(trueData);
 
     }
 

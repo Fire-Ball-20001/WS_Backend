@@ -10,18 +10,13 @@ import org.backend.utils.CheckData;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 public class TestCheck {
     Check check;
-    String[] error_data = new String[]
-            {
 
-            };
-    String[] ok_data = new String[]
-            {
 
-            };
 
     @BeforeEach
     void BeforeEach() {
@@ -41,15 +36,37 @@ public class TestCheck {
     void testErrorDataCheck()
     {
         //Arrange
+        String[] error_data = new String[]
+                {
+                    "firstname: 1233",
+                        "lastname: 132"
+                };
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->{ check.checkDataEmployees(error_data);})
-                .withMessage("Invalid org.backend.data format");
+                .withMessage("Invalid data format");
     }
 
     @Test
     void testOkDataCheck() {
         //Arrange
+        String[] ok_data = new String[]
+                {
+                        "id: "+UUID.randomUUID().toString() + "\n" +
+                                "firstName: " + RandomString.make(8) + "\n" +
+                                "lastName: " + RandomString.make(7) + "\n" +
+                                "description: " + RandomString.make(7) + "\n" +
+                                "postId: " + UUID.randomUUID().toString()+"\n" +
+                                "characteristics: " + RandomString.make(7) + "\n" +
+                                "image: none",
+                        "id: "+UUID.randomUUID().toString() + "\n" +
+                                "firstName: " + RandomString.make(8) + "\n" +
+                                "lastName: " + RandomString.make(7) + "\n" +
+                                "description: " + RandomString.make(7) + "\n" +
+                                "postId: " + UUID.randomUUID().toString()+"\n" +
+                                "characteristics: " + RandomString.make(7) + "\n" +
+                                "image: none"
+                };
         //Act
         //Assert
         assertThat(check.checkDataEmployees(ok_data)).isTrue();
@@ -60,7 +77,7 @@ public class TestCheck {
         //Arrange
 
         String random_file = RandomString.make(7)+".txt";
-        Path path = Path.of("C:\\",random_file);
+        Path path = Paths.get("C:\\",random_file);
         //Act
         boolean result = check.checkSourcePathData(path);
         //Assert
@@ -69,14 +86,14 @@ public class TestCheck {
     @Test
     void testOkFilePathCheck(@TempDir Path dir) throws IOException {
         //Arrange
-        Path file = Path.of(dir.toString(),RandomString.make(7)+".txt");
+        Path file = Paths.get(dir.toString(),RandomString.make(7)+".txt");
         FileWriter fileWriter = new FileWriter(file.toString());
         fileWriter.write("test");
         fileWriter.close();
         //Act
         boolean result = check.checkSourcePathData(file);
         //Assert
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -106,6 +123,50 @@ public class TestCheck {
         //Act
         //Assert
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->{ check.checkDataPosts(data);})
-                .withMessage("Invalid posts org.backend.data format");
+                .withMessage("Invalid post data format");
+    }
+
+    @Test
+    void testCheckOkPathFile(@TempDir Path dir) {
+        //Arrange
+        String file = Paths.get(dir.toString(),RandomString.make(7)+".txt").toString();
+        //Act
+        //Assert
+        assertThat(check.checkFormatFilePath(file))
+                .isTrue();
+
+    }
+
+    @Test
+    void testCheckErrorPathFile(@TempDir Path dir) {
+        //Arrange
+        String file = dir.toString();
+        //Act
+        //Assert
+        assertThat(check.checkFormatFilePath(file))
+                .isFalse();
+
+    }
+
+    @Test
+    void testCheckErrorPathDirectory(@TempDir Path dir) {
+        //Arrange
+        String file = Paths.get(dir.toString(),RandomString.make(7)+".txt").toString();
+        //Act
+        //Assert
+        assertThat(check.checkFormatDirectoryPath(file))
+                .isFalse();
+
+    }
+
+    @Test
+    void testCheckOkPathDirectory(@TempDir Path dir) {
+        //Arrange
+        String file = dir.toString();
+        //Act
+        //Assert
+        assertThat(check.checkFormatDirectoryPath(file))
+                .isTrue();
+
     }
 }

@@ -1,3 +1,7 @@
+import org.backend.Main;
+import org.backend.controllers.BaseController;
+import org.backend.controllers.EmployeeController;
+import org.backend.controllers.PostController;
 import org.backend.data.DataBuilder;
 import org.backend.data.DataLoader;
 import org.backend.data.DataSaver;
@@ -7,15 +11,20 @@ import org.backend.files.FileDataBuilder;
 import org.backend.files.FileLoader;
 import org.backend.files.FileSaver;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.backend.utils.CheckData;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +32,31 @@ import java.util.UUID;
 public class TestDataLoader {
     DataLoader dataLoader;
     DataBuilder dataBuilder;
+    static PostEmployee parent;
 
     @BeforeEach
     void beforeEach() {
         dataBuilder = new FileDataBuilder(new CheckData());
         dataLoader = new FileLoader(new CheckData(),dataBuilder);
+        //Create parent postEmployee
+        parent = new PostEmployee(UUID.randomUUID(),RandomString.make(10));
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        //Create and replace EmployeeController
+        EmployeeController employeeControllerMock = mock(EmployeeController.class);
+        BaseController<Employee> baseControllerEmployeeMock = (BaseController<Employee>) mock(BaseController.class);
+        when(baseControllerEmployeeMock.getDefaultFileName()).thenReturn(RandomString.make(8));
+        when(employeeControllerMock.getBaseController()).thenReturn(baseControllerEmployeeMock);
+        Main.employeeController = employeeControllerMock;
+
+        //Create and replace PostController
+        PostController postControllerMock = mock(PostController.class);
+        BaseController<PostEmployee> baseControllerPostMock = (BaseController<PostEmployee>) mock(BaseController.class);
+        when(baseControllerPostMock.getDefaultFileName()).thenReturn(RandomString.make(8));
+        when(postControllerMock.getBaseController()).thenReturn(baseControllerPostMock);
+        Main.postController = postControllerMock;
     }
 
     @Test
@@ -42,10 +71,16 @@ public class TestDataLoader {
     @Test
     void testOkLoadEmployeesData(@TempDir Path dir) {
         //Arrange
-        Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
         DataSaver dataSaver = new FileSaver(dataLoader.getCheck(),dataBuilder);
         Employee[] employees = CreateRandomEmployees(3);
         dataSaver.createOrReplaceSaveData(employees,file);
+
+        //Updating postController
+
+        when(Main.postController.getObjectById(parent.getId()))
+                .thenReturn(parent);
+
         //Act
         Employee[] load_employees = dataLoader.loadEmployeesData(file);
         //Assert
@@ -53,9 +88,9 @@ public class TestDataLoader {
                 .containsOnly(employees);
     }
     @Test
-    void testOkPostsData(@TempDir Path dir){
+    void testOkPostsData(@TempDir Path dir) {
         //Arrange
-        Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
         DataSaver dataSaver = new FileSaver(dataLoader.getCheck(),dataBuilder);
         List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
         for(int i = 0;i<3;i++)
@@ -73,7 +108,7 @@ public class TestDataLoader {
     @Test
     void testErrorLoadEmployeesData(@TempDir Path dir) throws Exception {
         //Arrange
-        Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
         try(FileWriter fileWriter = new FileWriter(file.toString()))
         {
             fileWriter.write(RandomString.make(10));
@@ -89,13 +124,13 @@ public class TestDataLoader {
                 .isThrownBy(()-> {
                     dataLoader.loadEmployeesData(file);
                 })
-                .withMessage("Invalid org.backend.employee org.backend.data format");
+                .withMessage("Invalid employee data format");
 
     }
     @Test
     void testErrorPostsData(@TempDir Path dir) throws Exception {
         //Arrange
-        Path file = Path.of(dir.toString(), RandomString.make(5)+".txt");
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
         try(FileWriter fileWriter = new FileWriter(file.toString()))
         {
             fileWriter.write(RandomString.make(10));
@@ -111,7 +146,7 @@ public class TestDataLoader {
                 .isThrownBy(()-> {
                     dataLoader.loadPostsData(file);
                 })
-                .withMessage("Invalid post org.backend.data format");
+                .withMessage("Invalid post data format");
     }
 
     private Employee[] CreateRandomEmployees(int size)
@@ -125,7 +160,7 @@ public class TestDataLoader {
                     .characteristics(new String[] {
                             RandomString.make(8)
                     })
-                    .post(new PostEmployee(UUID.randomUUID(),RandomString.make(8)))
+                    .post(parent)
                     .id(UUID.randomUUID())
                     .build();
             employees.add(tempEmployee);

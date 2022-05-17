@@ -2,6 +2,7 @@ package org.backend.data;
 
 import org.backend.employee.BaseMethodsForEmployeeAndPost;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 public interface DataSaver extends BaseDataMethods  {

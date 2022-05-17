@@ -3,14 +3,20 @@ package org.backend.employee;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.backend.Main;
+import org.backend.controllers.BaseController;
+import org.backend.controllers.BaseControllerMethods;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class Employee implements BaseMethodsForEmployeeAndPost {
+public class Employee implements BaseMethodsForEmployeeAndPost,Comparable<Employee> {
     @NonNull
-    private final UUID id;
+    @Builder.Default
+    private final UUID id = UUID.randomUUID();
     @NonNull
     private String firstName;
     @NonNull
@@ -37,7 +43,7 @@ public class Employee implements BaseMethodsForEmployeeAndPost {
         {
             charBuilder.append("\nХарактеристика: ");
             for (String characteristic:
-                 characteristics) {
+                    Arrays.stream(characteristics).sorted().collect(Collectors.toList())) {
                 charBuilder.append("\n");
                 charBuilder.append("\t").append(characteristic).append(";");
             }
@@ -49,8 +55,16 @@ public class Employee implements BaseMethodsForEmployeeAndPost {
         String result = "id: " + id.toString() + "\n" +
                 "firstName: " + firstName + "\n" +
                         "lastName: " + lastName + "\n" +
-                        "description: "+(description.isEmpty() ? "none" : description) + "\n" +
-                        "postId: "+ post.getId() + "\n";
+                        "description: "+(description.isEmpty() ? "none" : description) + "\n";
+        if(post.equals(Main.postController.getDefaultPost()))
+        {
+            result+="postId: none\n";
+        }
+        else
+        {
+            result+="postId: "+ post.getId() + "\n";
+        }
+
         StringBuilder charBuilder = new StringBuilder(result);
         charBuilder.append("characteristics: ");
         if(characteristics.length > 0)
@@ -70,5 +84,32 @@ public class Employee implements BaseMethodsForEmployeeAndPost {
     public String getName()
     {
         return firstName+" "+lastName;
+    }
+
+
+
+    @Override
+    public int compareTo(Employee employee) {
+        switch (getFirstName().compareTo(employee.getFirstName()))
+        {
+            case 0:
+            {
+                return getLastName().compareTo(employee.getLastName());
+            }
+            case 1:
+            {
+                return 1;
+            }
+            case -1:
+            {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public BaseControllerMethods<? extends BaseMethodsForEmployeeAndPost> getBaseController() {
+        return Main.employeeController.getBaseController();
     }
 }
