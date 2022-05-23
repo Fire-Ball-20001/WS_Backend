@@ -1,21 +1,31 @@
 package org.backend;
 
+import com.google.gson.Gson;
+import javafx.geometry.Pos;
+import org.backend.Mappers.EmployeeMapper;
 import org.backend.controllers.EmployeeController;
 import org.backend.controllers.PostController;
 import org.backend.data.DataBuilder;
 import org.backend.data.DataSaverAndLoader;
+import org.backend.dto.EmployeeDTO;
+import org.backend.employee.Employee;
+import org.backend.employee.PostEmployee;
 import org.backend.files.FileDataBuilder;
 import org.backend.files.FileSaverAndLoader;
+import org.backend.io.ConsoleArgsHelper;
 import org.backend.io.ConsoleBuilder.Menu;
 import org.backend.io.ConsoleBuilder.MenuBuilder;
 import org.backend.io.inputs.ConsoleInput;
 import org.backend.io.outputs.ConsoleOutput;
+import org.backend.json.JsonBuilder;
 import org.backend.observer.Observer;
 import org.backend.utils.Check;
 import org.backend.utils.CheckData;
+import org.mapstruct.factory.Mappers;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class Main {
     public static PostController postController;
@@ -25,6 +35,8 @@ public class Main {
     public static ConsoleOutput output;
     public static Menu mainMenu;
     public static Check check;
+    public static Gson gson;
+    private static ConsoleArgsHelper consoleArgsHelper;
 
     public static void main(String[] args) {
         mainMenu = MenuBuilder.createMenu()
@@ -84,41 +96,22 @@ public class Main {
         output = new ConsoleOutput();
         check = new CheckData();
         observer = new Observer();
-        String path = args[0];
-        Path path_posts;
-        Path path_employees;
-        if (check.checkFormatFilePath(path)) {
-            if (args.length <= 1) {
-                path_employees = Paths.get(path);
-                path_posts = Paths.get(path_employees.getParent().toString(), "posts.txt");
-            } else {
-                if (args[1].equals("-p")) {
-                    path_posts = Paths.get(path);
-                    path_employees = Paths.get(path_posts.getParent().toString(), "employees.txt");
-                } else {
-                    path_employees = Paths.get(path);
-                    path_posts = Paths.get(path_employees.getParent().toString(), "posts.txt");
-                }
-            }
+        gson = new Gson();
+        consoleArgsHelper = new ConsoleArgsHelper(args);
+        DataBuilder dataBuilder;
+        if(consoleArgsHelper.isJson())
+        {
+            dataBuilder = new JsonBuilder(new CheckData());
         }
-        else if (check.checkFormatDirectoryPath(path)) {
-            path_posts = Paths.get(path, "posts.txt");
-            path_employees = Paths.get(path, "employees.txt");
-        } else {
-
-            path = Paths.get("data").toAbsolutePath().toString();
-            output.errorPath(path);
-            path_posts = Paths.get(path, "posts.txt");
-            path_employees = Paths.get(path, "employees.txt");
-
+        else
+        {
+            dataBuilder = new FileDataBuilder(new CheckData());
         }
-        DataBuilder dataBuilder = new FileDataBuilder(new CheckData());
         DataSaverAndLoader dataSaverAndLoader = new FileSaverAndLoader(new CheckData(), dataBuilder);
-        DataSaverAndLoader dataLoader = new FileSaverAndLoader(new CheckData(), dataBuilder);
-        postController = new PostController(dataSaverAndLoader, path_posts);
+        postController = new PostController(dataSaverAndLoader, consoleArgsHelper.getPathPosts());
 
         postController.Init();
-        employeeController = new EmployeeController(dataSaverAndLoader, path_employees);
+        employeeController = new EmployeeController(dataSaverAndLoader, consoleArgsHelper.getPathEmployees());
         employeeController.Init();
         Main.output.outputCountEmployeesAndPosts();
         mainMenu.showMenu();

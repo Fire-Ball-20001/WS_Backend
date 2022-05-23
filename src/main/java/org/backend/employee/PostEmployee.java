@@ -5,7 +5,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.backend.Main;
+import org.backend.Mappers.EmployeeMapper;
+import org.backend.Mappers.PostMapper;
 import org.backend.controllers.BaseControllerMethods;
+import org.backend.dto.BaseDto;
+import org.mapstruct.factory.Mappers;
 
 import java.util.UUID;
 
@@ -37,5 +41,10 @@ public class PostEmployee implements BaseMethodsForEmployeeAndPost,Comparable<Po
     @Override
     public int compareTo(PostEmployee postEmployee) {
         return getName().compareTo(postEmployee.getName());
+    }
+
+    @Override
+    public BaseDto getDto() {
+        return (BaseDto) Mappers.getMapper(PostMapper.class).PostToPostDto(this);
     }
 }

@@ -4,8 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.backend.Main;
+import org.backend.Mappers.EmployeeMapper;
 import org.backend.controllers.BaseController;
 import org.backend.controllers.BaseControllerMethods;
+import org.backend.dto.BaseDto;
+import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -111,5 +114,10 @@ public class Employee implements BaseMethodsForEmployeeAndPost,Comparable<Employ
     @Override
     public BaseControllerMethods<? extends BaseMethodsForEmployeeAndPost> getBaseController() {
         return Main.employeeController.getBaseController();
+    }
+
+    @Override
+    public BaseDto getDto() {
+        return (BaseDto) Mappers.getMapper(EmployeeMapper.class).EmployeeToEmployeeDTO(this);
     }
 }

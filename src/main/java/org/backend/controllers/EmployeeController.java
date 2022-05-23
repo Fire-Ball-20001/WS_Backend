@@ -35,7 +35,8 @@ public class EmployeeController extends BaseController<Employee> implements ILis
             Main.output.errorLoadEmployee();
             employees_array = new Employee[0];
         }
-        List<Employee> employees = List.of(employees_array);
+        List<Employee> employees = Arrays.asList(employees_array);
+
         setAllObjects(
                 employees
                         .stream()

@@ -7,6 +7,7 @@ import org.backend.employee.PostEmployee;
 import lombok.NonNull;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ public class PostController extends BaseController<PostEmployee> {
                             new PostEmployee(UUID.randomUUID(),"Старший")
             };
         }
-        List<PostEmployee> posts = List.of(posts_array);
+        List<PostEmployee> posts = Arrays.asList(posts_array);
         setAllObjects(posts.stream().collect(Collectors.toMap(PostEmployee::getId, Function.identity())));
     }
 
@@ -52,12 +53,12 @@ public class PostController extends BaseController<PostEmployee> {
 
     @Override
     public PostEmployee getObjectById(UUID id) {
-        if(id.equals(getDefaultPost().getId()))
+        try {
+            return super.getObjectById(id);
+        }
+        catch (RuntimeException e)
         {
             return getDefaultPost();
-        }
-        else {
-            return super.getObjectById(id);
         }
     }
 
