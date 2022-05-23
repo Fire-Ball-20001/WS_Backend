@@ -1,6 +1,5 @@
-package org.backend.employee;
+package org.backend.models;
 
-import org.backend.controllers.BaseController;
 import org.backend.controllers.BaseControllerMethods;
 import org.backend.dto.BaseDto;
 

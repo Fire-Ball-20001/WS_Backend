@@ -1,6 +1,6 @@
 package org.backend.controllers;
 
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
+import org.backend.models.BaseMethodsForEmployeeAndPost;
 import org.backend.utils.FindArgument;
 
 import java.util.List;

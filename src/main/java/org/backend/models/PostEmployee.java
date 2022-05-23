@@ -1,11 +1,10 @@
-package org.backend.employee;
+package org.backend.models;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.backend.Main;
-import org.backend.Mappers.EmployeeMapper;
 import org.backend.Mappers.PostMapper;
 import org.backend.controllers.BaseControllerMethods;
 import org.backend.dto.BaseDto;

@@ -1,8 +1,8 @@
 package org.backend.data;
 
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.BaseMethodsForEmployeeAndPost;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 
 
 

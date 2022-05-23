@@ -2,8 +2,8 @@ package org.backend.Mappers;
 
 import org.backend.Main;
 import org.backend.dto.EmployeeDTO;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -3,11 +3,10 @@ import static org.mockito.Mockito.*;
 
 import org.backend.Main;
 import org.backend.controllers.PostController;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

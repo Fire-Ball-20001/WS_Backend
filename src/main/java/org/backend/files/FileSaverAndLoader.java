@@ -3,13 +3,13 @@ package org.backend.files;
 import org.backend.Main;
 import org.backend.data.DataBuilder;
 import org.backend.data.DataSaverAndLoader;
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
+import org.backend.models.BaseMethodsForEmployeeAndPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 import org.backend.utils.Check;
 import org.backend.utils.PathUtils;
 

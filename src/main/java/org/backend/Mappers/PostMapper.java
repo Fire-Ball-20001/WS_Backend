@@ -1,7 +1,7 @@
 package org.backend.Mappers;
 
 import org.backend.dto.PostDTO;
-import org.backend.employee.PostEmployee;
+import org.backend.models.PostEmployee;
 import org.mapstruct.Mapper;
 
 @Mapper

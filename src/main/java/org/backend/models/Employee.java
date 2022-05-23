@@ -1,11 +1,10 @@
-package org.backend.employee;
+package org.backend.models;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.backend.Main;
 import org.backend.Mappers.EmployeeMapper;
-import org.backend.controllers.BaseController;
 import org.backend.controllers.BaseControllerMethods;
 import org.backend.dto.BaseDto;
 import org.mapstruct.factory.Mappers;

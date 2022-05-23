@@ -11,9 +11,9 @@ import org.backend.Mappers.PostMapper;
 import org.backend.data.DataBuilder;
 import org.backend.dto.EmployeeDTO;
 import org.backend.dto.PostDTO;
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.BaseMethodsForEmployeeAndPost;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 import org.backend.utils.Check;
 import org.mapstruct.factory.Mappers;
 

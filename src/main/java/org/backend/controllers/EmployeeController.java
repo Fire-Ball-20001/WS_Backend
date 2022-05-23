@@ -3,7 +3,7 @@ package org.backend.controllers;
 import org.backend.Main;
 import org.backend.config.Config;
 import org.backend.data.DataSaverAndLoader;
-import org.backend.employee.Employee;
+import org.backend.models.Employee;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;

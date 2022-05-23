@@ -1,8 +1,8 @@
 package org.backend.io.outputs;
 
 import org.backend.Main;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 
 public class ConsoleOutput {
     public static void textListCommands(Void object) {

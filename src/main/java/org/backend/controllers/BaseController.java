@@ -1,7 +1,7 @@
 package org.backend.controllers;
 
 import org.backend.data.DataSaverAndLoader;
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
+import org.backend.models.BaseMethodsForEmployeeAndPost;
 import lombok.NonNull;
 import org.backend.utils.FindArgument;
 

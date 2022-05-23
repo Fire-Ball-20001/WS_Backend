@@ -2,14 +2,12 @@ package org.backend.io.inputs;
 
 
 import org.backend.Main;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
+import org.backend.models.Employee;
+import org.backend.models.PostEmployee;
 import org.backend.utils.FindArgument;
 
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ConsoleInput {
 

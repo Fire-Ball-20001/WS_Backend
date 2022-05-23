@@ -1,15 +1,10 @@
 package org.backend;
 
 import com.google.gson.Gson;
-import javafx.geometry.Pos;
-import org.backend.Mappers.EmployeeMapper;
 import org.backend.controllers.EmployeeController;
 import org.backend.controllers.PostController;
 import org.backend.data.DataBuilder;
 import org.backend.data.DataSaverAndLoader;
-import org.backend.dto.EmployeeDTO;
-import org.backend.employee.Employee;
-import org.backend.employee.PostEmployee;
 import org.backend.files.FileDataBuilder;
 import org.backend.files.FileSaverAndLoader;
 import org.backend.io.ConsoleArgsHelper;
@@ -21,11 +16,6 @@ import org.backend.json.JsonBuilder;
 import org.backend.observer.Observer;
 import org.backend.utils.Check;
 import org.backend.utils.CheckData;
-import org.mapstruct.factory.Mappers;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 public class Main {
     public static PostController postController;
