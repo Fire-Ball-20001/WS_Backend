@@ -1,13 +1,23 @@
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import org.backend.Main;
+import org.backend.controllers.PostController;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 public class TestEmployee {
+
+    @BeforeAll
+    static void beforeAll() {
+        Main.postController = mock(PostController.class);
+    }
 
     @Test
     void testCreateEmployee() {
@@ -71,6 +81,10 @@ public class TestEmployee {
                 };
         UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
+
+        when(Main.postController.getObjectById(post.getId()))
+                .thenReturn(post);
+
         UUID id = UUID.randomUUID();
         String trueString = "Имя: " + firstName + "\n" +
                 "Фамилия: " + lastName + "\n" +
@@ -105,6 +119,10 @@ public class TestEmployee {
                 };
         UUID postId = UUID.randomUUID();
         PostEmployee post = new PostEmployee(postId, RandomString.make(7));
+
+        when(Main.postController.getObjectById(post.getId()))
+                .thenReturn(post);
+
         UUID id = UUID.randomUUID();
         String trueString = "id: "+id.toString() + "\n" +
                 "firstName: " + firstName + "\n" +

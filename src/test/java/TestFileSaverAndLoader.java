@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,12 +29,13 @@ import java.util.UUID;
 public class TestFileSaverAndLoader {
     DataSaverAndLoader dataSaverAndLoader;
     DataBuilder dataBuilder;
+    static PostEmployee parent;
 
     @BeforeEach
     void beforeEach() {
         dataBuilder = new FileDataBuilder(new CheckData());
         dataSaverAndLoader = new FileSaverAndLoader(new CheckData(),dataBuilder);
-
+        parent = new PostEmployee(UUID.randomUUID(),RandomString.make(10));
 
     }
     @BeforeAll
@@ -101,6 +103,84 @@ public class TestFileSaverAndLoader {
                 .isNotEmptyFile()
                 .hasContent(dataBuilder.getSaveString(postEmployees.toArray(new PostEmployee[] {})));
     }
+    @Test
+    void testOkLoadEmployeesData(@TempDir Path dir) {
+        //Arrange
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
+        Employee[] employees = CreateRandomEmployees(3);
+        dataSaverAndLoader.createOrReplaceSaveData(employees,file);
+
+        //Updating postController
+
+        when(Main.postController.getObjectById(parent.getId()))
+                .thenReturn(parent);
+
+        //Act
+        Employee[] load_employees = dataSaverAndLoader.loadEmployeesData(file);
+        //Assert
+        assertThat(load_employees)
+                .containsOnly(employees);
+    }
+    @Test
+    void testOkPostsData(@TempDir Path dir) {
+        //Arrange
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
+        List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
+        for(int i = 0;i<3;i++)
+        {
+            postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
+        }
+        dataSaverAndLoader.createOrReplaceSaveData(postEmployees.toArray(new PostEmployee[] {}),file);
+        //Act
+        PostEmployee[] load_employees = dataSaverAndLoader.loadPostsData(file);
+        //Assert
+        assertThat(load_employees)
+                .containsOnly(postEmployees.toArray(new PostEmployee[] {}));
+    }
+
+    @Test
+    void testErrorLoadEmployeesData(@TempDir Path dir) throws Exception {
+        //Arrange
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
+        try(FileWriter fileWriter = new FileWriter(file.toString()))
+        {
+            fileWriter.write(RandomString.make(10));
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            assert false;
+        }
+        //Act
+        //Assert
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(()-> {
+                    dataSaverAndLoader.loadEmployeesData(file);
+                })
+                .withMessage("Invalid employee data format");
+
+    }
+    @Test
+    void testErrorPostsData(@TempDir Path dir) throws Exception {
+        //Arrange
+        Path file = Paths.get(dir.toString(), RandomString.make(5)+".txt");
+        try(FileWriter fileWriter = new FileWriter(file.toString()))
+        {
+            fileWriter.write(RandomString.make(10));
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            assert false;
+        }
+        //Act
+        //Assert
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(()-> {
+                    dataSaverAndLoader.loadPostsData(file);
+                })
+                .withMessage("Invalid post data format");
+    }
 
     private Employee[] CreateRandomEmployees(int size)
     {
@@ -113,7 +193,7 @@ public class TestFileSaverAndLoader {
                     .characteristics(new String[] {
                             RandomString.make(8)
                     })
-                    .post(new PostEmployee(UUID.randomUUID(),RandomString.make(8)))
+                    .post(parent)
                     .id(UUID.randomUUID())
                     .build();
             employees.add(tempEmployee);

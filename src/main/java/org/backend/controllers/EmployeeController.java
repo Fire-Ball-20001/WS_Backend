@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.backend.observer.IListener;
+import org.backend.utils.FindArgument;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -78,5 +79,20 @@ public class EmployeeController extends BaseController<Employee> implements ILis
                                 Collectors.toMap(
                                         Employee::getId,
                                         Function.identity())));
+    }
+
+
+    @Override
+    public UUID[] findIdsByName(FindArgument argument) {
+        UUID[] employees = super.findIdsByName(argument);
+        List<UUID> result = new ArrayList<>();
+        for(UUID id : employees)
+        {
+            if(getObjectById(id).getPost().getName().contains(argument.getPostName()))
+            {
+                result.add(id);
+            }
+        }
+        return result.toArray(new UUID[0]);
     }
 }

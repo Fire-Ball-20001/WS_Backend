@@ -9,7 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PostDTO {
+public class PostDTO implements BaseDto {
     private UUID id;
     private String name;
 }

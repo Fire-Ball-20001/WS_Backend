@@ -4,9 +4,12 @@ package org.backend.io.inputs;
 import org.backend.Main;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
+import org.backend.utils.FindArgument;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ConsoleInput {
 
@@ -229,8 +232,23 @@ public class ConsoleInput {
     static Employee findEmployee()
     {
         Employee employee;
-        String name = enterString(true,"Введите имя и фамилию, через пробел: ",true);
-        UUID[] uuids = Main.employeeController.findIdsByName(name);
+        String name = enterString(true,"Введите имя и фамилию и должность, при желании, через пробел: ",true);
+        String[] strings = name.split(" ");
+        FindArgument argument;
+        if(strings.length >= 3)
+        {
+            argument = FindArgument.builder()
+                    .name(strings[0]+" "+strings[1])
+                    .postName(strings[2])
+                    .build();
+        }
+        else
+        {
+            argument = FindArgument.builder()
+                    .name(String.join(" ", strings))
+                    .build();
+        }
+        UUID[] uuids = Main.employeeController.findIdsByName(argument);
         if(uuids.length > 1)
         {
             Main.output.outputTextNL("Обнаруженно несколько совпадений, какое из них выбрать?");

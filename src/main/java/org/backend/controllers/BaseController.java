@@ -3,9 +3,11 @@ package org.backend.controllers;
 import org.backend.data.DataSaverAndLoader;
 import org.backend.employee.BaseMethodsForEmployeeAndPost;
 import lombok.NonNull;
+import org.backend.utils.FindArgument;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> implements BaseControllerMethods<T> {
@@ -36,17 +38,28 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> im
     }
     public UUID[] findIdsByName(String name)
     {
+        StringBuilder regex = new StringBuilder("(?m)");
+        for(char ch :name.toCharArray())
+        {
+            regex.append(".*").append(ch);
+        }
+        Pattern pattern = Pattern.compile(regex.toString());
         List<UUID> uuids = new ArrayList<>();
         arrays.forEach(
                 (UUID id, T object) ->
                 {
-                    if(object.getName().equals(name))
+                    if(pattern.matcher(object.getName()).find())
                     {
                         uuids.add(id);
                     }
                 }
         );
         return uuids.toArray(new UUID[] {});
+    }
+
+    @Override
+    public UUID[] findIdsByName(FindArgument argument) {
+        return findIdsByName(argument.getName());
     }
 
     public boolean addObject(T object)
@@ -119,4 +132,5 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> im
     public List<T> getSortObjects() {
         return getAllObjects().stream().sorted().collect(Collectors.toList());
     }
+
 }

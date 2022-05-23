@@ -1,6 +1,7 @@
 package org.backend.controllers;
 
 import org.backend.employee.BaseMethodsForEmployeeAndPost;
+import org.backend.utils.FindArgument;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ public interface BaseControllerMethods<T extends BaseMethodsForEmployeeAndPost> 
     T getObjectById(UUID id);
     UUID getIdByObject(T object);
     UUID[] findIdsByName(String name);
+    UUID[] findIdsByName(FindArgument argument);
     boolean addObject(T object);
     boolean setObject(T object);
     boolean deleteObjectById(UUID id);
