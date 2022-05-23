@@ -3,11 +3,9 @@ package org.backend;
 import org.backend.controllers.EmployeeController;
 import org.backend.controllers.PostController;
 import org.backend.data.DataBuilder;
-import org.backend.data.DataLoader;
-import org.backend.data.DataSaver;
+import org.backend.data.DataSaverAndLoader;
 import org.backend.files.FileDataBuilder;
-import org.backend.files.FileLoader;
-import org.backend.files.FileSaver;
+import org.backend.files.FileSaverAndLoader;
 import org.backend.io.ConsoleBuilder.Menu;
 import org.backend.io.ConsoleBuilder.MenuBuilder;
 import org.backend.io.inputs.ConsoleInput;
@@ -16,7 +14,6 @@ import org.backend.observer.Observer;
 import org.backend.utils.Check;
 import org.backend.utils.CheckData;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -33,7 +30,7 @@ public class Main {
         mainMenu = MenuBuilder.createMenu()
                 .addMenu()
                 .setText("Управление участниками")
-                .addButton()
+                    .addButton()
                 .textButton("Вывести список участников")
                 .activateFunction(ConsoleOutput::outputEmployee)
                 .build()
@@ -116,12 +113,12 @@ public class Main {
 
         }
         DataBuilder dataBuilder = new FileDataBuilder(new CheckData());
-        DataSaver dataSaver = new FileSaver(new CheckData(), dataBuilder);
-        DataLoader dataLoader = new FileLoader(new CheckData(), dataBuilder);
-        postController = new PostController(dataSaver, dataLoader, path_posts);
+        DataSaverAndLoader dataSaverAndLoader = new FileSaverAndLoader(new CheckData(), dataBuilder);
+        DataSaverAndLoader dataLoader = new FileSaverAndLoader(new CheckData(), dataBuilder);
+        postController = new PostController(dataSaverAndLoader, path_posts);
 
         postController.Init();
-        employeeController = new EmployeeController(dataSaver, dataLoader, path_employees);
+        employeeController = new EmployeeController(dataSaverAndLoader, path_employees);
         employeeController.Init();
         Main.output.outputCountEmployeesAndPosts();
         mainMenu.showMenu();

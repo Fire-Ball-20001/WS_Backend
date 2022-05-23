@@ -8,10 +8,10 @@ import org.backend.employee.PostEmployee;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class ConsoleInput implements BaseInput{
+public class ConsoleInput {
 
     static Scanner input = new Scanner(System.in);
-    public BaseInput.InputCommon common;
+    public ConsoleInput.ConsoleInputCommon common;
     public ConsoleInput()
     {
         common = new ConsoleInputCommon();
@@ -147,10 +147,9 @@ public class ConsoleInput implements BaseInput{
 
     }
 
-    private class ConsoleInputCommon implements BaseInput.InputCommon
+    public class ConsoleInputCommon
     {
 
-        @Override
         public int enterCommand(int max_command) {
             return enterNumberConsole(max_command);
         }

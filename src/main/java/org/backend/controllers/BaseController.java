@@ -1,7 +1,6 @@
 package org.backend.controllers;
 
-import org.backend.data.DataLoader;
-import org.backend.data.DataSaver;
+import org.backend.data.DataSaverAndLoader;
 import org.backend.employee.BaseMethodsForEmployeeAndPost;
 import lombok.NonNull;
 
@@ -12,14 +11,11 @@ import java.util.stream.Collectors;
 public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> implements BaseControllerMethods<T> {
     private HashMap<UUID,T> arrays;
     @NonNull
-    protected final DataSaver dataSaver;
-    @NonNull
-    protected final DataLoader dataLoader;
+    protected final DataSaverAndLoader dataSaverAndLoader;
     protected final Path file;
 
-    public BaseController(@NonNull DataSaver dataSaver, @NonNull DataLoader dataLoader, Path file) {
-        this.dataSaver = dataSaver;
-        this.dataLoader = dataLoader;
+    public BaseController(@NonNull DataSaverAndLoader dataSaverAndLoader, Path file) {
+        this.dataSaverAndLoader = dataSaverAndLoader;
         this.file = file;
     }
 
@@ -86,7 +82,7 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> im
     public boolean saveData(Path file)
     {
         try {
-            dataSaver.createOrReplaceSaveData(arrays.values().toArray(new BaseMethodsForEmployeeAndPost[0]),file);
+            dataSaverAndLoader.createOrReplaceSaveData(arrays.values().toArray(new BaseMethodsForEmployeeAndPost[0]),file);
         }
         catch (Exception e)
         {

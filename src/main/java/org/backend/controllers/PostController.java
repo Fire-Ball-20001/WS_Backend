@@ -2,8 +2,7 @@ package org.backend.controllers;
 
 import org.backend.Main;
 import org.backend.config.Config;
-import org.backend.data.DataLoader;
-import org.backend.data.DataSaver;
+import org.backend.data.DataSaverAndLoader;
 import org.backend.employee.PostEmployee;
 import lombok.NonNull;
 
@@ -16,8 +15,8 @@ import java.util.stream.Collectors;
 public class PostController extends BaseController<PostEmployee> {
 
 
-    public PostController(@NonNull DataSaver dataSaver, @NonNull DataLoader dataLoader, Path file) {
-        super(dataSaver,dataLoader,file);
+    public PostController(@NonNull DataSaverAndLoader dataSaverAndLoader, Path file) {
+        super(dataSaverAndLoader,file);
     }
 
     @Override
@@ -25,7 +24,7 @@ public class PostController extends BaseController<PostEmployee> {
     {
         PostEmployee[] posts_array;
         try {
-            posts_array = dataLoader.loadPostsData(file);
+            posts_array = dataSaverAndLoader.loadPostsData(file);
         }
         catch (RuntimeException e)
         {

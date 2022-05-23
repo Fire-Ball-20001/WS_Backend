@@ -3,19 +3,17 @@ import org.backend.controllers.BaseController;
 import org.backend.controllers.EmployeeController;
 import org.backend.controllers.PostController;
 import org.backend.data.DataBuilder;
-import org.backend.data.DataSaver;
-import org.backend.employee.BaseMethodsForEmployeeAndPost;
+import org.backend.data.DataSaverAndLoader;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 import org.backend.files.FileDataBuilder;
-import org.backend.files.FileSaver;
+import org.backend.files.FileSaverAndLoader;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.backend.utils.CheckData;
-import org.mockito.MockSettings;
 
 import static org.mockito.Mockito.*;
 
@@ -27,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TestDataSaver {
-    DataSaver dataSaver;
+public class TestFileSaverAndLoader {
+    DataSaverAndLoader dataSaverAndLoader;
     DataBuilder dataBuilder;
 
     @BeforeEach
     void beforeEach() {
         dataBuilder = new FileDataBuilder(new CheckData());
-        dataSaver = new FileSaver(new CheckData(),dataBuilder);
+        dataSaverAndLoader = new FileSaverAndLoader(new CheckData(),dataBuilder);
 
 
     }
@@ -61,21 +59,21 @@ public class TestDataSaver {
         //Arrange
         //Act
         //Assert
-        assertThat(DataSaver.class)
+        assertThat(DataSaverAndLoader.class)
                 .isInterface();
     }
 
     @Test
     void testOkDataEmployeesSave(@TempDir Path dir) {
         //Arrange
-        DataBuilder dataBuilder = new FileDataBuilder(dataSaver.getCheck());
+        DataBuilder dataBuilder = new FileDataBuilder(dataSaverAndLoader.getCheck());
         Path file = Paths.get(dir.toString(),RandomString.make(5) + ".txt");
         Employee[] employees = CreateRandomEmployees(3);
 
 
 
         //Act
-        dataSaver.createOrReplaceSaveData(employees,file);
+        dataSaverAndLoader.createOrReplaceSaveData(employees,file);
         //Assert
         assertThat(file)
                 .exists()
@@ -85,7 +83,7 @@ public class TestDataSaver {
     @Test
     void testOkDataPostsSave(@TempDir Path dir) {
         //Arrange
-        DataBuilder dataBuilder = new FileDataBuilder(dataSaver.getCheck());
+        DataBuilder dataBuilder = new FileDataBuilder(dataSaverAndLoader.getCheck());
         Path file = Paths.get(dir.toString(),RandomString.make(5) + ".txt");
         List<PostEmployee> postEmployees = new ArrayList<PostEmployee>();
 
@@ -97,7 +95,7 @@ public class TestDataSaver {
             postEmployees.add(new PostEmployee(UUID.randomUUID(),RandomString.make(10)));
         }
         //Act
-        dataSaver.createOrReplaceSaveData(postEmployees.toArray(new PostEmployee[] {}),file);
+        dataSaverAndLoader.createOrReplaceSaveData(postEmployees.toArray(new PostEmployee[] {}),file);
         //Assert
         assertThat(file)
                 .exists()

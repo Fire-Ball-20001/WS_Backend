@@ -4,7 +4,7 @@ import org.backend.Main;
 import org.backend.employee.Employee;
 import org.backend.employee.PostEmployee;
 
-public class ConsoleOutput extends BaseOutput {
+public class ConsoleOutput {
     public static void textListCommands(Void object) {
         System.out.println("Список команд:");
     }

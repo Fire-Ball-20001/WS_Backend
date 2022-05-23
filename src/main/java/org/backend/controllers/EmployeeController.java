@@ -2,14 +2,12 @@ package org.backend.controllers;
 
 import org.backend.Main;
 import org.backend.config.Config;
-import org.backend.data.DataLoader;
-import org.backend.data.DataSaver;
+import org.backend.data.DataSaverAndLoader;
 import org.backend.employee.Employee;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.backend.io.outputs.ConsoleOutput;
 import org.backend.observer.IListener;
 
 import java.nio.file.Path;
@@ -21,8 +19,8 @@ import java.util.stream.Collectors;
 @Setter(AccessLevel.PRIVATE)
 public class EmployeeController extends BaseController<Employee> implements IListener {
 
-    public EmployeeController(@NonNull DataSaver dataSaver, @NonNull DataLoader dataLoader, Path file) {
-        super(dataSaver, dataLoader, file);
+    public EmployeeController(@NonNull DataSaverAndLoader dataSaverAndLoader, Path file) {
+        super(dataSaverAndLoader, file);
         Main.observer.addListener(this);
     }
 
@@ -30,7 +28,7 @@ public class EmployeeController extends BaseController<Employee> implements ILis
     public void Init() {
         Employee [] employees_array;
         try {
-            employees_array = dataLoader.loadEmployeesData(file);
+            employees_array = dataSaverAndLoader.loadEmployeesData(file);
         }
         catch (RuntimeException e)
         {
