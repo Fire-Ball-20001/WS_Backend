@@ -1,4 +1,4 @@
-package org.backend.Mappers;
+package org.backend.mappers;
 
 import org.backend.dto.PostDTO;
 import org.backend.models.PostEmployee;

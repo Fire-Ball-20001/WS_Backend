@@ -1,4 +1,4 @@
-package org.backend.Mappers;
+package org.backend.mappers;
 
 import org.backend.Main;
 import org.backend.dto.EmployeeDTO;
