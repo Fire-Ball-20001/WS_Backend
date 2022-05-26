@@ -1,8 +1,8 @@
-package org.backend.io.ConsoleBuilder.Buttons;
+package org.console.io.ConsoleBuilder.Buttons;
 
 import lombok.Getter;
 import org.backend.Main;
-import org.backend.io.ConsoleBuilder.MenuBuilder;
+import org.console.io.ConsoleBuilder.MenuBuilder;
 
 import java.util.function.Function;
 

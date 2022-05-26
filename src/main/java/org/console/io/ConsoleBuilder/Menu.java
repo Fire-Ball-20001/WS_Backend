@@ -1,4 +1,4 @@
-package org.backend.io.ConsoleBuilder;
+package org.console.io.ConsoleBuilder;
 
 public interface Menu {
     void showMenu();

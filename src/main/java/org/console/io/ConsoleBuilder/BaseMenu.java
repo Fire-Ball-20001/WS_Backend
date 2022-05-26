@@ -1,8 +1,8 @@
-package org.backend.io.ConsoleBuilder;
+package org.console.io.ConsoleBuilder;
 
 import lombok.Getter;
 import org.backend.Main;
-import org.backend.io.ConsoleBuilder.Buttons.Button;
+import org.console.io.ConsoleBuilder.Buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;

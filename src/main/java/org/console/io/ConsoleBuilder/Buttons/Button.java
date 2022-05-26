@@ -1,4 +1,4 @@
-package org.backend.io.ConsoleBuilder.Buttons;
+package org.console.io.ConsoleBuilder.Buttons;
 
 public interface Button {
     void activate();

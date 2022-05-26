@@ -1,3 +1,5 @@
+package org.backend.files;
+
 import org.backend.Main;
 import org.backend.controllers.PostController;
 import static org.mockito.Mockito.*;

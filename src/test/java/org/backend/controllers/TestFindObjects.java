@@ -1,3 +1,5 @@
+package org.backend.controllers;
+
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.backend.Main;
 import org.backend.controllers.EmployeeController;
@@ -130,10 +132,10 @@ public class TestFindObjects {
         }
         Main.employeeController.setAllObjects(employees.stream().collect(Collectors.toMap(Employee::getId, Function.identity())));
         //Act
-        UUID[] result = Main.employeeController.findIdsByName(FindArgument.builder()
+        UUID[] result = Main.employeeController.findFilteredEmployeesByPost(FindArgument.builder()
                 .name(temp.getName())
-                .postName(temp.getPost().getName())
-                .build());
+                .build(),
+                temp.getPost());
         //Assert
         assertThat(result[0])
                 .isEqualTo(temp.getId());

@@ -1,4 +1,4 @@
-package org.backend.io.inputs;
+package org.console.io.inputs;
 
 
 import org.backend.Main;
@@ -237,7 +237,6 @@ public class ConsoleInput {
         {
             argument = FindArgument.builder()
                     .name(strings[0]+" "+strings[1])
-                    .postName(strings[2])
                     .build();
         }
         else
@@ -246,7 +245,7 @@ public class ConsoleInput {
                     .name(String.join(" ", strings))
                     .build();
         }
-        UUID[] uuids = Main.employeeController.findIdsByName(argument);
+        UUID[] uuids = Main.employeeController.findByFindArg(argument);
         if(uuids.length > 1)
         {
             Main.output.outputTextNL("Обнаруженно несколько совпадений, какое из них выбрать?");

@@ -11,7 +11,7 @@ public interface BaseControllerMethods<T extends BaseMethodsForEmployeeAndPost> 
     T getObjectById(UUID id);
     UUID getIdByObject(T object);
     UUID[] findIdsByName(String name);
-    UUID[] findIdsByName(FindArgument argument);
+    UUID[] findByFindArg(FindArgument argument);
     boolean addObject(T object);
     boolean setObject(T object);
     boolean deleteObjectById(UUID id);
@@ -21,4 +21,5 @@ public interface BaseControllerMethods<T extends BaseMethodsForEmployeeAndPost> 
     void setAllObjects(Map<UUID,T> new_objects);
     String getDefaultFileName();
     int getCountObjects();
+    UUID[] getRoughUUIDs(String uuid);
 }

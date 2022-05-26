@@ -1,3 +1,5 @@
+package org.backend.json;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;

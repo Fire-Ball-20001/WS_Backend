@@ -7,17 +7,19 @@ import org.backend.data.DataBuilder;
 import org.backend.data.DataSaverAndLoader;
 import org.backend.files.FileDataBuilder;
 import org.backend.files.FileSaverAndLoader;
-import org.backend.io.ConsoleArgsHelper;
-import org.backend.io.ConsoleBuilder.Menu;
-import org.backend.io.ConsoleBuilder.MenuBuilder;
-import org.backend.io.inputs.ConsoleInput;
-import org.backend.io.outputs.ConsoleOutput;
+import org.console.io.ConsoleArgsHelper;
+import org.console.io.ConsoleBuilder.Menu;
+import org.console.io.ConsoleBuilder.MenuBuilder;
+import org.console.io.inputs.ConsoleInput;
+import org.console.io.outputs.ConsoleOutput;
 import org.backend.json.JsonBuilder;
 import org.backend.observer.Observer;
 import org.backend.utils.Check;
 import org.backend.utils.CheckData;
 
 public class Main {
+    //Temporary solution
+    //------------------------------------------
     public static PostController postController;
     public static EmployeeController employeeController;
     public static Observer observer;
@@ -27,6 +29,7 @@ public class Main {
     public static Check check;
     public static Gson gson;
     private static ConsoleArgsHelper consoleArgsHelper;
+    //-----------------------------------------------------
 
     public static void main(String[] args) {
         mainMenu = MenuBuilder.createMenu()

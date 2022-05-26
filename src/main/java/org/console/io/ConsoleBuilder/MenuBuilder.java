@@ -1,7 +1,7 @@
-package org.backend.io.ConsoleBuilder;
+package org.console.io.ConsoleBuilder;
 
-import org.backend.io.ConsoleBuilder.Buttons.BaseButton;
-import org.backend.io.ConsoleBuilder.Buttons.Button;
+import org.console.io.ConsoleBuilder.Buttons.BaseButton;
+import org.console.io.ConsoleBuilder.Buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;

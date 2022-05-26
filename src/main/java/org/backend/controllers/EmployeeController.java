@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.backend.models.PostEmployee;
 import org.backend.observer.IListener;
 import org.backend.utils.FindArgument;
 
@@ -81,18 +82,40 @@ public class EmployeeController extends BaseController<Employee> implements ILis
                                         Function.identity())));
     }
 
+    //Algorin
 
-    @Override
-    public UUID[] findIdsByName(FindArgument argument) {
-        UUID[] employees = super.findIdsByName(argument);
-        List<UUID> result = new ArrayList<>();
-        for(UUID id : employees)
+    public UUID[] findFilteredEmployeesByPost(FindArgument argument, PostEmployee postEmployee)
+    {
+        UUID[] employees = super.findByFindArg(argument);
+        if(postEmployee == null)
         {
-            if(getObjectById(id).getPost().getName().contains(argument.getPostName()))
+            return employees;
+        }
+        List<UUID> result = new ArrayList<>();
+        for (UUID id:
+             employees) {
+            if(getObjectById(id).getPost().equals(postEmployee))
             {
                 result.add(id);
             }
         }
         return result.toArray(new UUID[0]);
     }
+
+    public UUID[] findEmployeesByPost(PostEmployee postEmployee) {
+        return findFilteredEmployeesByPost(FindArgument.builder().build(),postEmployee);
+    }
+
+    public UUID[] findEmployeesByRoughPostId(String postId) {
+        List<UUID> employees = new ArrayList<>();
+        UUID[] posts = Main.postController.getRoughUUIDs(postId);
+        for(UUID finds_post : posts)
+        {
+            employees.addAll(
+                    Arrays.stream(
+                            findEmployeesByPost(Main.postController.getObjectById(finds_post))).collect(Collectors.toSet()));
+        }
+        return employees.toArray(new UUID[0]);
+    }
+
 }

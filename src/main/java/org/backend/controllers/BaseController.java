@@ -43,6 +43,7 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> im
         {
             regex.append(".*").append(ch);
         }
+        regex.append(".*");
         Pattern pattern = Pattern.compile(regex.toString());
         List<UUID> uuids = new ArrayList<>();
         arrays.forEach(
@@ -58,8 +59,42 @@ public abstract class BaseController<T extends BaseMethodsForEmployeeAndPost> im
     }
 
     @Override
-    public UUID[] findIdsByName(FindArgument argument) {
-        return findIdsByName(argument.getName());
+    public UUID[] getRoughUUIDs(String uuid) {
+        StringBuilder regex = new StringBuilder("(?m)");
+        for(char ch :uuid.toCharArray())
+        {
+            regex.append(ch).append(".*");
+        }
+        List<UUID> uuids = new ArrayList<>();
+        Pattern pattern = Pattern.compile(regex.toString());
+        arrays.forEach(
+                (UUID id, T object) ->
+                {
+                    if(pattern.matcher(id.toString()).find())
+                    {
+                        uuids.add(id);
+                    }
+                }
+        );
+        return uuids.toArray(new UUID[] {});
+    }
+
+    @Override
+    public UUID[] findByFindArg(FindArgument argument) {
+        UUID[] results = findIdsByName(argument.getName());
+        if(argument.getId()!=null) {
+            List<UUID> resultById = new ArrayList<>();
+            for (UUID id:
+                 results) {
+                if(id.toString().equals(argument.getId().toString()))
+                {
+                    resultById.add(id);
+                }
+            }
+            results = resultById.toArray(new UUID[0]);
+        }
+
+        return results;
     }
 
     public boolean addObject(T object)

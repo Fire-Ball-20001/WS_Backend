@@ -1,4 +1,4 @@
-package org.backend.io.outputs;
+package org.console.io.outputs;
 
 import org.backend.Main;
 import org.backend.models.Employee;
