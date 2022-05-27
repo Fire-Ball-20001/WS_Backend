@@ -10,14 +10,11 @@ import org.mapstruct.Mapping;
 import java.util.UUID;
 
 @Mapper
-public interface EmployeeMapper {
+public interface EmployeeMapper{
 
-    @Mapping(target = "post", source = "post_id")
-    Employee EmployeeDtoToEmployee(EmployeeDTO dto);
+    @Mapping(target = "post", source = "post")
+    @Mapping(target = "id",source = "dto.id")
+    Employee EmployeeDtoToEmployee(EmployeeDTO dto,PostEmployee post);
     @Mapping(target = "post_id", source = "post.id")
     EmployeeDTO EmployeeToEmployeeDTO(Employee employee);
-    default PostEmployee PostIdToPost(UUID post_id)
-    {
-        return Main.postController.getObjectById(post_id);
-    }
 }

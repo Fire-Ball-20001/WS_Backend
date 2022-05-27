@@ -39,7 +39,9 @@ public class JsonBuilder implements DataBuilder {
         }
         return Arrays.stream(employeeDTOS).map(
                 (EmployeeDTO dto) ->
-                        Mappers.getMapper(EmployeeMapper.class).EmployeeDtoToEmployee(dto)
+                        Mappers.getMapper(EmployeeMapper.class).EmployeeDtoToEmployee(
+                                dto,
+                                Main.postController.getObjectById(dto.getPost_id()))
         ).toArray(Employee[]::new);
     }
 
