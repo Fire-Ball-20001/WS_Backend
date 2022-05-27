@@ -12,9 +12,16 @@ public class ConsoleArgsHelper {
     Path pathPosts;
     Path pathEmployees;
     boolean isJson = false;
+    boolean isAuto = false;
+    String findName = "";
+    String filterPostId = "";
     public ConsoleArgsHelper(String[] args)
     {
         Check check = Main.check;
+        if(args.length <1)
+        {
+            throw new RuntimeException("ERROR: Нужен хотя бы один аргумент");
+        }
         String path = args[0];
         if (check.checkFormatFilePath(path)) {
             if (args.length <= 1) {
@@ -42,11 +49,21 @@ public class ConsoleArgsHelper {
 
         }
 
-        for(String arg: args)
+        for(int i =0;i<args.length;i++)
         {
-            if(arg.equals("-j"))
+            if(args[i].equals("-j"))
             {
                 isJson = true;
+            }
+            else if(args[i].equals("-f"))
+            {
+                isAuto = true;
+                findName = args[i+1];
+                i++;
+            }
+            else if(args[i].equals("-postId"))
+            {
+                filterPostId = args[i+1];
             }
         }
     }

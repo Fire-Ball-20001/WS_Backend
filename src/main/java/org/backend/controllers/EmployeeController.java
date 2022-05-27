@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.backend.models.PostEmployee;
 import org.backend.observer.IListener;
 import org.backend.utils.FindArgument;
+import org.backend.utils.PathUtils;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -116,6 +118,16 @@ public class EmployeeController extends BaseController<Employee> implements ILis
                             findEmployeesByPost(Main.postController.getObjectById(finds_post))).collect(Collectors.toSet()));
         }
         return employees.toArray(new UUID[0]);
+    }
+
+    public UUID[] findFilteredEmployeesByRoughPostId(FindArgument argument, String postId)
+    {
+        UUID[] employeesByPost = findEmployeesByRoughPostId(postId);
+        UUID[] employeesByArg = findByFindArg(argument);
+        return Arrays.stream(employeesByArg).filter(
+                (UUID id) ->
+                        Arrays.asList(employeesByPost).contains(id)
+        ).toArray(UUID[]::new);
     }
 
 }
